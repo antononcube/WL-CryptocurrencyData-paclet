@@ -12,13 +12,13 @@ related data explorations are given in [AA2].
 `CryptocurencyData[name]`   
 gives daily closing price data for the cryptocurrency name.
 
-`CryptocurencyData[name, start]`
+`CryptocurencyData[name, start]`   
 gives daily closing price data for the cryptocurrency name from start to current date.
 
-`CryptocurencyData[name, {start, end}]`
+`CryptocurencyData[name, {start, end}]`   
 gives daily closing price data for the cryptocurrency name from start to end.
 
-`CryptocurencyData[name, prop, {start, end}]`
+`CryptocurencyData[name, prop, {start, end}]`   
 gives value of the specified property for the cryptocurrency name from start to end.
 
 -----
