@@ -5,6 +5,8 @@ Cryptocurrency data retrieval with a WL paclet.
 The data ingestion approach is described in [AA1]; 
 related data explorations are given in [AA2].
 
+![](./Documentation/Diagrams/BTC-ETH-trading-volume.jpeg)
+
 -----
 
 ## Usage
