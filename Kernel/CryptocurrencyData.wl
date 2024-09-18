@@ -141,19 +141,16 @@ ToQuantities[aTS : Association[(_String -> (_TemporalData | _TimeSeries)) ..],
 Clear[CryptocurrencyData];
 
 CryptocurrencyData::nyfcc =
-    "When of the option \"Source\" is set to \"YahooFinance\" the first \
-argument is expected to be one of `1`.";
+    "When of the option \"Source\" is set to \"YahooFinance\" the first argument is expected to be one of `1`.";
 
 CryptocurrencyData::nprop =
     "The property argument is expected to be Automatic, All, one of `1`, or a list of those values.";
 
 CryptocurrencyData::nsrc =
-    "The value of the option \"Source\" is expected to be Automatic, \
-\"YahooFinance\", or \"DataBitcoinityOrg\".";
+    "The value of the option \"Source\" is expected to be Automatic, \"YahooFinance\", or \"DataBitcoinityOrg\".";
 
 CryptocurrencyData::nrt =
-    "The value of the option \"ResultType\" is expected to be Automatic, \
-Dataset, or TimeSeries.";
+    "The value of the option \"ResultType\" is expected to be Automatic, Dataset, or TimeSeries.";
 
 CryptocurrencyData::nc =
     "The value of the option \"Currency\" is expected to be one of `1`.";
@@ -165,8 +162,7 @@ more than two arguments are given, then the third argument is expected to be \
 a date range specification.";
 
 CryptocurrencyData::dbobtc =
-    "When the option \"Source\" is set to \"DataBitcoinityOrg\" the only \
-allowed cryptocurrency is \"BTC\".";
+    "When the option \"Source\" is set to \"DataBitcoinityOrg\" the only allowed cryptocurrency is \"BTC\".";
 
 Options[CryptocurrencyData] = {"Source" -> "YahooFinance",
   "Currency" -> "USD", "LedgerStart" -> DateObject[{2009, 1, 3}],
@@ -174,12 +170,10 @@ Options[CryptocurrencyData] = {"Source" -> "YahooFinance",
 
 CryptocurrencyData["ClearCachedData"] := (aAllData = <||>);
 
-CryptocurrencyData["Classes"] := {"Cryptocurrencies", "Currencies",
-  "Exchanges"};
+CryptocurrencyData["Classes"] := {"Cryptocurrencies", "Currencies", "Exchanges"};
 
 CryptocurrencyData["CryptocurrencyNames"] := aCryptoCurrencySymbolToName;
-CryptocurrencyData["Cryptocurrencies"] :=
-    Complement[lsCryptoCurrencies, {"all"}];
+CryptocurrencyData["Cryptocurrencies"] := Complement[lsCryptoCurrencies, {"all"}];
 CryptocurrencyData["Currencies"] := Complement[lsCurrencies, {"all"}];
 CryptocurrencyData["Exchanges"] := Complement[lsExchanges, {"all"}];
 
