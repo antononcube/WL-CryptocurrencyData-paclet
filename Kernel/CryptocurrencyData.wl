@@ -329,7 +329,7 @@ YahooFinanceCryptocurrencyData[ccSymbol_String, propArg_?PropertySpecQ, dateSpec
       resultType = OptionValue[YahooFinanceCryptocurrencyData, "ResultType"];
       If[TrueQ[resultType === Automatic], resultType = TimeSeries];
 
-      (*Proces quanties*)
+      (*Process quantities*)
       quantitiesQ = TrueQ[OptionValue[YahooFinanceCryptocurrencyData, "Quantities"]];
 
       (*Get data*)
@@ -345,10 +345,7 @@ YahooFinanceCryptocurrencyData[ccSymbol_String, propArg_?PropertySpecQ, dateSpec
                 Association@
                     Map[
                       {"YahooFinance", #, currencySymbol} ->
-
-                          ResourceFunction["ImportCSVToDataset"][
-                            stYFURL[<|"cryptoCurrencySymbol" -> #,
-                              "currencySymbol" -> currencySymbol, "endDate" -> ccNow|>]] &,
+                          ResourceFunction["ImportCSVToDataset"][stYFURL[<|"cryptoCurrencySymbol" -> #, "currencySymbol" -> currencySymbol, "endDate" -> ccNow|>]] &,
                       lsCryptoCurrencies
                     ];
 
