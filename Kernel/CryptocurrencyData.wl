@@ -6,7 +6,7 @@
 
 BeginPackage["AntonAntonov`CryptocurrencyData`"];
 
-CryptocurrencyData::usage = "Generally speaking, CryptcurrencyData adheres to the signatures design of FinancialData, but there are a number of differences.";
+CryptocurrencyData::usage = "Generally speaking, CryptocurrencyData adheres to the signatures design of FinancialData, but there are a number of differences.";
 
 Begin["`Private`"];
 
@@ -81,8 +81,7 @@ data_type=`dataType`&exchange=`exchange`&r=`timeUnit`&t=l&timespan=`timeSpan`\
 
 aYFDefaultParameters = <|"cryptoCurrencySymobl" -> "BTC",
   "currencySymbol" -> "USD", "timeUnit" -> "1d",
-  "endDate" ->
-      Round[AbsoluteTime[Date[]] - AbsoluteTime[{1970, 1, 1, 0, 0, 0}]]|>;
+  "endDate" -> Round[AbsoluteTime[Date[]] - AbsoluteTime[{1970, 1, 1, 0, 0, 0}]]|>;
 
 aDBODefaultParameters = <|"currencySymbol" -> "USD", "dataType" -> "price",
   "exchange" -> "all", "timeUnit" -> "day", "timeSpan" -> "all"|>;
@@ -94,8 +93,7 @@ aAllData = <||>;
 (*Predicates*)
 
 Clear[DateSpecQ];
-DateSpecQ[x_ : (_String | {_?NumericQ ..} | _?NumericQ | _DateObject)] :=
-    Quiet[DateObjectQ[DateObject[x]]];
+DateSpecQ[x : (_String | {_?NumericQ ..} | _?NumericQ | _DateObject)] := Quiet[DateObjectQ[DateObject[x]]];
 DateSpecQ[___] := False;
 
 Clear[PropertySpecQ];
@@ -115,6 +113,8 @@ ToTimeSeriesAssociation[dsCCData_Dataset] :=
       aTSRes
     ];
 
+lsKnownProperties = {"Open", "High", "Low", "Close", "Adj Close", "Volume"};
+
 Clear[ToQuantities];
 ToQuantities[ts : (_TemporalData | _TimeSiries), unit_String] :=
     TimeSeries@Transpose[{ts["Times"], Quantity[ts["Values"], unit]}];
@@ -124,8 +124,7 @@ ToQuantities[aTS : Association[(_String -> (_TemporalData | _TimeSeries)) ..],
         KeyValueMap[
           #1 ->
               Which[
-                MemberQ[ToLowerCase@{"Open", "High", "Low", "Close", "Adj Close"},
-                  ToLowerCase[#1]],
+                MemberQ[ToLowerCase@{"Open", "High", "Low", "Close", "Adj Close"}, ToLowerCase[#1]],
                 ToQuantities[#2, currency],
 
                 MemberQ[ToLowerCase@{"Volume"}, ToLowerCase[#1]],
@@ -144,6 +143,9 @@ Clear[CryptocurrencyData];
 CryptocurrencyData::nyfcc =
     "When of the option \"Source\" is set to \"YahooFinance\" the first \
 argument is expected to be one of `1`.";
+
+CryptocurrencyData::nprop =
+    "The property argument is expected to be Automatic, All, one of `1`, or a list of those values.";
 
 CryptocurrencyData::nsrc =
     "The value of the option \"Source\" is expected to be Automatic, \
@@ -190,17 +192,14 @@ CryptocurrencyData[ccSymbol_, dateSpec_?DateSpecQ, opts : OptionsPattern[]] :=
 CryptocurrencyData[ccSymbol_, prop_?PropertySpecQ, opts : OptionsPattern[]] :=
     CryptocurrencyData[ccSymbol, prop, All, opts];
 
-CryptocurrencyData[ccSymbol_, prop_?PropertySpecQ, All,
-  opts : OptionsPattern[]] :=
+CryptocurrencyData[ccSymbol_, prop_?PropertySpecQ, All,opts : OptionsPattern[]] :=
     CryptocurrencyData[ccSymbol,
       prop, {OptionValue[CryptocurrencyData, "LedgerStart"], Now}, opts];
 
-CryptocurrencyData[ccSymbol_, prop_?PropertySpecQ, dateSpec_?DateSpecQ,
-  opts : OptionsPattern[]] :=
+CryptocurrencyData[ccSymbol_, prop_?PropertySpecQ, dateSpec_?DateSpecQ, opts : OptionsPattern[]] :=
     CryptocurrencyData[ccSymbol, prop, {dateSpec, Now}, opts];
 
-CryptocurrencyData[ccSymbol_, prop_?PropertySpecQ,
-  dateSpec : {_?DateSpecQ, _?DateSpecQ}, opts : OptionsPattern[]] :=
+CryptocurrencyData[ccSymbol_, prop_?PropertySpecQ, dateSpec : {_?DateSpecQ, _?DateSpecQ}, opts : OptionsPattern[]] :=
     Block[{source},
 
       source = OptionValue[CryptocurrencyData, "Source"];
@@ -241,10 +240,7 @@ YahooFinanceCryptocurrencyData[All, "Summary", _, opts : OptionsPattern[]] :=
         lsData = Import["https://finance.yahoo.com/cryptocurrencies", "Data"];
 
         (*Find position of the column names row*)
-        pos =
-            First@Position[
-              lsData, {"Symbol", "Name", "Price (Intraday)", "Change",
-                "% Change", ___}];
+        pos = First@Position[lsData, {"Symbol", "Name", "Price (Intraday)", "Change", "% Change", ___}];
 
         (*Get column names*)
         dsCryptoCurrenciesColumnNames = lsData[[Sequence @@ pos]];
@@ -266,15 +262,12 @@ YahooFinanceCryptocurrencyData[All, "Summary", _, opts : OptionsPattern[]] :=
                           NumericQ[#2], #2,
                           True,
                           ToExpression[
-                            StringReplace[#2, {"," -> "", "%" -> "*0.01", "T" -> "*10^12",
-                              "B" -> "*10^9", "M" -> "*10^6"}]]
+                            StringReplace[#2, {"," -> "", "%" -> "*0.01", "T" -> "*10^12", "B" -> "*10^9", "M" -> "*10^6"}]]
                         ] &, #] &
             ];
 
         (*Save dataset for reuse*)
-        aAllData =
-            Append[aAllData, {"YahooFinance", All, "Summary"} ->
-                dsCryptoCurrencies];
+        aAllData = Append[aAllData, {"YahooFinance", All, "Summary"} -> dsCryptoCurrencies];
 
         (*Result*)
         dsCryptoCurrencies
@@ -287,23 +280,20 @@ YahooFinanceCryptocurrencyData[All, prop_?PropertySpecQ,
 
 YahooFinanceCryptocurrencyData[ccSymbols : {_String ..}, prop_?PropertySpecQ,
   dateSpec : {_?DateSpecQ, _?DateSpecQ}, opts : OptionsPattern[]] :=
-    Association[# -> YahooFinanceCryptocurrencyData[#, prop, dateSpec, opts] & /@
-        ccSymbols];
+    Association[# -> YahooFinanceCryptocurrencyData[#, prop, dateSpec, opts] & /@ ccSymbols];
 
-YahooFinanceCryptocurrencyData[ccSymbol_String, propArg_?PropertySpecQ,
-  dateSpecArg : {_?DateSpecQ, _?DateSpecQ}, opts : OptionsPattern[]] :=
+YahooFinanceCryptocurrencyData[ccSymbol_String, propArg_?PropertySpecQ, dateSpecArg : {_?DateSpecQ, _?DateSpecQ}, opts : OptionsPattern[]] :=
     Block[{prop = propArg, dateSpec = dateSpecArg, currencySymbol, resultType,
       quantitiesQ, ccNow, aCryptoCurrenciesDataRaw, aCryptoCurrenciesData,
       dsRes},
 
       (*Process ccSymbol*)
       If[! MemberQ[lsCryptoCurrencies, ccSymbol],
-        ResourceFunction["ResourceFunctionMessage"][CryptocurrencyData::nyfcc,
-          ToString[lsCryptoCurrencies]];
+        ResourceFunction["ResourceFunctionMessage"][CryptocurrencyData::nyfcc, ToString[lsCryptoCurrencies]];
         Return[$Failed]
       ];
 
-      (*Process propeties*)
+      (*Process properties*)
       Which[
         TrueQ[prop === Automatic],
         prop = {"DateObject", "Close"},
@@ -319,6 +309,11 @@ YahooFinanceCryptocurrencyData[ccSymbol_String, propArg_?PropertySpecQ,
         prop = All
       ];
 
+	  If[ListQ[prop] && Length[Complement[prop, Append[lsKnownProperties, "DateObject"]]] > 0,
+	    ResourceFunction["ResourceFunctionMessage"][CryptocurrencyData::nprop, ToString[lsKnownProperties]];
+        Return[$Failed]
+	  ];
+	  	
       (*Process date spec*)
       dateSpec = Sort[AbsoluteTime@*DateObject /@ dateSpec];
 
@@ -335,8 +330,7 @@ YahooFinanceCryptocurrencyData[ccSymbol_String, propArg_?PropertySpecQ,
       If[TrueQ[resultType === Automatic], resultType = TimeSeries];
 
       (*Proces quanties*)
-      quantitiesQ =
-          TrueQ[OptionValue[YahooFinanceCryptocurrencyData, "Quantities"]];
+      quantitiesQ = TrueQ[OptionValue[YahooFinanceCryptocurrencyData, "Quantities"]];
 
       (*Get data*)
       dsRes =
