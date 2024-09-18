@@ -320,8 +320,7 @@ YahooFinanceCryptocurrencyData[ccSymbol_String, propArg_?PropertySpecQ, dateSpec
       (*Get currency symbol*)
       currencySymbol = OptionValue[YahooFinanceCryptocurrencyData, "Currency"];
       If[! MemberQ[lsCurrencies, currencySymbol],
-        ResourceFunction["ResourceFunctionMessage"][CryptocurrencyData::nc,
-          ToString[lsCurrencies]];
+        ResourceFunction["ResourceFunctionMessage"][CryptocurrencyData::nc, ToString[lsCurrencies]];
         Return[$Failed]
       ];
 
@@ -337,8 +336,7 @@ YahooFinanceCryptocurrencyData[ccSymbol_String, propArg_?PropertySpecQ, dateSpec
           If[KeyExistsQ[aAllData, {"YahooFinance", ccSymbol, currencySymbol}],
             Lookup[aAllData, Key[{"YahooFinance", ccSymbol, currencySymbol}]],
             (*ELSE*)
-            ccNow =
-                Round@AbsoluteTime[Date[]] - AbsoluteTime[{1970, 1, 1, 0, 0, 0}];
+            ccNow = Round@AbsoluteTime[Date[]] - AbsoluteTime[{1970, 1, 1, 0, 0, 0}];
 
             (*Retrieve all time series data*)
             aCryptoCurrenciesDataRaw =
@@ -355,7 +353,8 @@ YahooFinanceCryptocurrencyData[ccSymbol_String, propArg_?PropertySpecQ, dateSpec
                     KeyValueMap[
                       Function[{k, v},
                         k -> v[All,
-                          Join[<|"ID" -> StringRiffle[k, "-"], "Symbol" -> k[[2]],
+                          Join[<|"ID" -> StringRiffle[k, "-"],
+                            "Symbol" -> k[[2]],
                             "Currency" -> currencySymbol,
                             "DateObject" -> DateObject[#Date]|>, #] &]],
                       aCryptoCurrenciesDataRaw];
@@ -368,9 +367,7 @@ YahooFinanceCryptocurrencyData[ccSymbol_String, propArg_?PropertySpecQ, dateSpec
           ];
 
       (*Filter to specs*)
-      dsRes =
-          dsRes[Select[
-            dateSpec[[1]] <= AbsoluteTime[#DateObject] <= dateSpec[[2]] &], prop];
+      dsRes = dsRes[Select[dateSpec[[1]] <= AbsoluteTime[#DateObject] <= dateSpec[[2]] &], prop];
 
       (*Result*)
       Which[
@@ -379,11 +376,8 @@ YahooFinanceCryptocurrencyData[ccSymbol_String, propArg_?PropertySpecQ, dateSpec
 
         MemberQ[{TimeSeries, EventSeries, "TimeSeries", "EvenSeries"}, resultType],
         dsRes = ToTimeSeriesAssociation[dsRes];
-        dsRes =
-            KeyMap[# /. {"Adj Close" -> "AdjustedClose"} &,
-              KeyDrop[dsRes, {"ID", "Symbol", "Currency", "Date"}]];
-        dsRes =
-            If[quantitiesQ, ToQuantities[dsRes, currencySymbol, "Items"], dsRes];
+        dsRes = KeyMap[# /. {"Adj Close" -> "AdjustedClose"} &, KeyDrop[dsRes, {"ID", "Symbol", "Currency", "Date"}]];
+        dsRes = If[quantitiesQ, ToQuantities[dsRes, currencySymbol, "Items"], dsRes];
         If[Length[dsRes] == 1, dsRes[[1]], dsRes],
 
         True,
