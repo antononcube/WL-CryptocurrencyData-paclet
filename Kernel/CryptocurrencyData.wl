@@ -187,8 +187,7 @@ CryptocurrencyData[ccSymbol_, prop_?PropertySpecQ, opts : OptionsPattern[]] :=
     CryptocurrencyData[ccSymbol, prop, All, opts];
 
 CryptocurrencyData[ccSymbol_, prop_?PropertySpecQ, All,opts : OptionsPattern[]] :=
-    CryptocurrencyData[ccSymbol,
-      prop, {OptionValue[CryptocurrencyData, "LedgerStart"], Now}, opts];
+    CryptocurrencyData[ccSymbol, prop, {OptionValue[CryptocurrencyData, "LedgerStart"], Now}, opts];
 
 CryptocurrencyData[ccSymbol_, prop_?PropertySpecQ, dateSpec_?DateSpecQ, opts : OptionsPattern[]] :=
     CryptocurrencyData[ccSymbol, prop, {dateSpec, Now}, opts];
@@ -214,8 +213,7 @@ CryptocurrencyData[ccSymbol_, prop_?PropertySpecQ, dateSpec : {_?DateSpecQ, _?Da
     ];
 
 CryptocurrencyData[___] :=
-    (ResourceFunction["ResourceFunctionMessage"][
-      CryptocurrencyData::args]; $Failed);
+    (ResourceFunction["ResourceFunctionMessage"][CryptocurrencyData::args]; $Failed);
 
 (*YahooFinanceCryptocurrencyData*)
 
@@ -268,12 +266,10 @@ YahooFinanceCryptocurrencyData[All, "Summary", _, opts : OptionsPattern[]] :=
       ]
     ];
 
-YahooFinanceCryptocurrencyData[All, prop_?PropertySpecQ,
-  dateSpec : {_?DateSpecQ, _?DateSpecQ}, opts : OptionsPattern[]] :=
+YahooFinanceCryptocurrencyData[All, prop_?PropertySpecQ, dateSpec : {_?DateSpecQ, _?DateSpecQ}, opts : OptionsPattern[]] :=
     YahooFinanceCryptocurrencyData[lsCryptoCurrencies, prop, dateSpec, opts];
 
-YahooFinanceCryptocurrencyData[ccSymbols : {_String ..}, prop_?PropertySpecQ,
-  dateSpec : {_?DateSpecQ, _?DateSpecQ}, opts : OptionsPattern[]] :=
+YahooFinanceCryptocurrencyData[ccSymbols : {_String ..}, prop_?PropertySpecQ, dateSpec : {_?DateSpecQ, _?DateSpecQ}, opts : OptionsPattern[]] :=
     Association[# -> YahooFinanceCryptocurrencyData[#, prop, dateSpec, opts] & /@ ccSymbols];
 
 YahooFinanceCryptocurrencyData[ccSymbol_String, propArg_?PropertySpecQ, dateSpecArg : {_?DateSpecQ, _?DateSpecQ}, opts : OptionsPattern[]] :=
@@ -386,8 +382,7 @@ Clear[DataBitcoinityOrgCryptocurrencyData];
 
 Options[DataBitcoinityOrgCryptocurrencyData] = Options[CryptocurrencyData];
 
-DataBitcoinityOrgCryptocurrencyData[ccSpec_, props_?ListQ,
-  dateSpec : {_?DateSpecQ, _?DateSpecQ}, opts : OptionsPattern[]] :=
+DataBitcoinityOrgCryptocurrencyData[ccSpec_, props_?ListQ, dateSpec : {_?DateSpecQ, _?DateSpecQ}, opts : OptionsPattern[]] :=
     Block[{lsRes},
       lsRes =
           DataBitcoinityOrgCryptocurrencyData[ccSpec, #, dateSpec, opts] & /@
@@ -399,14 +394,15 @@ DataBitcoinityOrgCryptocurrencyData[ccSpec_, props_?ListQ,
       ]
     ];
 
-DataBitcoinityOrgCryptocurrencyData[Automatic | "BTC", prop_?PropertySpecQ,
-  dateSpec : {_?DateSpecQ, _?DateSpecQ}, opts : OptionsPattern[]] :=
+DataBitcoinityOrgCryptocurrencyData[Automatic | "BTC", prop_?PropertySpecQ, dateSpec : {_?DateSpecQ, _?DateSpecQ}, opts : OptionsPattern[]] :=
     DataBitcoinityOrgCryptocurrencyData[{Automatic, "BTC"}, prop, dateSpec,
       opts];
 
-DataBitcoinityOrgCryptocurrencyData[{exchangeArg : (_String | All |
-    Automatic), "BTC"}, propArg : (_String | Automatic),
-  dateSpecArg : {_?DateSpecQ, _?DateSpecQ}, opts : OptionsPattern[]] :=
+DataBitcoinityOrgCryptocurrencyData[
+  {exchangeArg : (_String | All | Automatic), "BTC"},
+  propArg : (_String | Automatic),
+  dateSpecArg : {_?DateSpecQ, _?DateSpecQ},
+  opts : OptionsPattern[]] :=
     Block[{exchange = exchangeArg, prop = propArg, dateSpec = dateSpecArg,
       currencySymbol, resultType, quantitiesQ, dsBTCData, aColumnCorrections,
       dsRes},
