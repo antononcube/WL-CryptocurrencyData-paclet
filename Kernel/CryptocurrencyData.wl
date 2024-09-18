@@ -79,7 +79,7 @@ data_type=`dataType`&exchange=`exchange`&r=`timeUnit`&t=l&timespan=`timeSpan`\
 
 (*Defaults*)
 
-aYFDefaultParameters = <|"cryptoCurrencySymobl" -> "BTC",
+aYFDefaultParameters = <|"cryptoCurrencySymbol" -> "BTC",
   "currencySymbol" -> "USD", "timeUnit" -> "1d",
   "endDate" -> Round[AbsoluteTime[Date[]] - AbsoluteTime[{1970, 1, 1, 0, 0, 0}]]|>;
 
